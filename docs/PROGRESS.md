@@ -351,9 +351,20 @@ lib/repositories/ (5 repository files)
 | 2026-03-13 00:39 | b97aa9f | 시드 데이터 + 프리미엄 UI/UX (Phase 8) |
 | 2026-03-13 08:15 | 478b657 | 인증 페이지 UI 개선 + 비밀번호 재설정 |
 
-### 핫픽스
-- admin@admin.com 비밀번호 DB 직접 재설정 (Supabase SQL: `crypt('admin123!', gen_salt('bf'))`)
-- 데모 계정 3개 비밀번호도 동일하게 재설정
+### 핫픽스: 로그인 불가 해결 (2026-03-13)
+
+**증상**: admin@admin.com / admin123! 로그인 시 "이메일 또는 비밀번호가 올바르지 않습니다" 에러
+
+**근본 원인**: `auth.users` 레코드가 raw SQL INSERT로 생성되어 `email_change` 등 string 컬럼이 NULL. GoTrue(Go)의 `sql.Scan`이 NULL→string 변환 불가로 `Database error querying schema` (500 에러) 발생. 비밀번호 문제가 아닌 GoTrue 스키마 읽기 자체가 실패.
+
+**수정 내역**:
+1. `auth.users`의 NULL string 컬럼 일괄 빈 문자열로 수정 (email_change, phone_change, tokens 등)
+2. Supabase Admin API(`updateUserById`)로 비밀번호 정상 갱신
+3. `scripts/seed.ts`: 기존 유저 발견 시 비밀번호 갱신 로직 추가
+4. `scripts/seed.ts`: `.env.local` 플레이스홀더 검증 가드 추가
+5. `CLAUDE.md` 9번 섹션: raw SQL INSERT 금지 규칙 추가
+
+**재발 방지**: auth.users 조작은 반드시 Supabase Admin API 경유. raw SQL INSERT/UPDATE 금지.
 
 ### 다음 작업 후보
 1. Supabase Realtime 채팅 전환 (폴링 → 실시간)

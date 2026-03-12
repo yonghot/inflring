@@ -13,6 +13,20 @@ if (!supabaseUrl || !serviceRoleKey) {
   process.exit(1);
 }
 
+// Guard: prevent running against placeholder values
+if (supabaseUrl.includes('your-project') || supabaseUrl.includes('placeholder')) {
+  console.error('❌ .env.local에 플레이스홀더 값이 들어있습니다.');
+  console.error('   실제 Supabase 프로젝트 URL로 교체해주세요.');
+  console.error('   현재값: ' + supabaseUrl);
+  process.exit(1);
+}
+
+if (serviceRoleKey.includes('placeholder') || serviceRoleKey.length < 30) {
+  console.error('❌ SUPABASE_SERVICE_ROLE_KEY가 올바르지 않습니다.');
+  console.error('   실제 Supabase service role key로 교체해주세요.');
+  process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
@@ -148,12 +162,22 @@ async function getOrCreateUser(def: UserDef): Promise<string> {
     return created.user.id;
   }
 
-  // User already exists - find by email
+  // User already exists - update password and metadata via Admin API
   if (createErr?.message?.includes('already been registered') || createErr?.message?.includes('already exists')) {
     const { data: listData } = await supabase.auth.admin.listUsers({ perPage: 1000 });
     const existing = listData?.users?.find((u) => u.email === def.email);
     if (existing) {
-      console.log(`  ℹ️  유저 존재: ${def.email} (${existing.id})`);
+      // IMPORTANT: Always update password for existing users to ensure login works
+      // GoTrue Admin API handles password hashing correctly (unlike raw SQL crypt())
+      const { error: updateErr } = await supabase.auth.admin.updateUserById(existing.id, {
+        password: def.password,
+        user_metadata: { role: def.role, display_name: def.display_name },
+      });
+      if (updateErr) {
+        console.warn(`  ⚠️  비밀번호 갱신 실패: ${def.email} - ${updateErr.message}`);
+      } else {
+        console.log(`  🔄 유저 존재 + 비밀번호 갱신: ${def.email} (${existing.id})`);
+      }
       return existing.id;
     }
   }

@@ -55,3 +55,6 @@
 - Vercel 배포 시 작업 디렉토리에 한국어/특수문자 포함되면 프로젝트명 자동 생성 실패. `--name` 플래그로 명시 필요.
 - 계약 상태 머신은 `VALID_STATUS_TRANSITIONS` 맵으로 관리. 허용되지 않은 전이 요청 시 명시적 에러 반환.
 - 에스크로 자동 생성은 계약 서명 완료(쌍방 서명) 시점에 트리거. 수동 생성 금지.
+- **Supabase Auth 유저 생성은 반드시 Admin API(`supabase.auth.admin.createUser()`)를 사용**. raw SQL INSERT 금지. GoTrue는 Go의 `sql.Scan`으로 `auth.users` 컬럼을 읽는데, `email_change`, `phone_change` 등 string 컬럼이 NULL이면 `converting NULL to string is unsupported` 에러로 인증 전체가 실패한다. Admin API는 이 컬럼들을 빈 문자열로 올바르게 초기화한다.
+- **시드 스크립트에서 기존 유저 비밀번호 갱신 필수**. `admin.updateUserById(id, { password })` 사용. raw SQL `crypt()`로 `encrypted_password`를 직접 수정하지 않는다.
+- **시드 스크립트 실행 전 `.env.local` 플레이스홀더 검증 필수**. `your-project`, `placeholder` 포함 시 즉시 중단.
