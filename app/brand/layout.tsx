@@ -7,6 +7,9 @@ import {
   Megaphone,
   Search,
   Handshake,
+  MessageSquare,
+  FileText,
+  Star,
 } from 'lucide-react';
 import { AuthProvider, useAuthContext } from '@/components/features/auth/auth-provider';
 import {
@@ -19,6 +22,9 @@ const BRAND_MENU: SidebarMenuItem[] = [
   { href: '/brand/campaigns', label: '내 캠페인', icon: Megaphone },
   { href: '/brand/creators', label: '인플루언서 찾기', icon: Search },
   { href: '/brand/deals', label: '내 딜', icon: Handshake },
+  { href: '/brand/messages', label: '메시지', icon: MessageSquare },
+  { href: '/brand/contracts', label: '계약 관리', icon: FileText },
+  { href: '/brand/reviews', label: '받은 리뷰', icon: Star },
 ];
 
 function BrandLayoutInner({ children }: { children: React.ReactNode }) {

@@ -54,6 +54,27 @@ export const BUSINESS_CATEGORIES = [
   '인테리어/가구', '스포츠', '미디어/출판', '기타',
 ] as const;
 
+export const CONTRACT_STATUS_LABELS: Record<string, string> = {
+  draft: '초안',
+  pending_sign: '서명 대기',
+  active: '진행 중',
+  content_submitted: '콘텐츠 제출됨',
+  under_review: '검토 중',
+  revision_requested: '수정 요청',
+  approved: '승인됨',
+  completed: '완료',
+  disputed: '분쟁 중',
+  cancelled: '취소됨',
+};
+
+export const NOTIFICATION_TYPE_LABELS: Record<string, string> = {
+  match: '매칭',
+  message: '메시지',
+  contract: '계약',
+  review: '리뷰',
+  system: '시스템',
+};
+
 export const TRUST_SCORE_CONFIG = {
   initial: 36.5,
   warning: 33.0,

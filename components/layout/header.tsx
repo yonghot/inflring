@@ -6,6 +6,8 @@ import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { NotificationBell } from '@/components/features/notification/notification-bell';
+import { createClient } from '@/lib/supabase/client';
 
 const navLinks = [
   { href: '#features', label: '기능 소개' },
@@ -16,6 +18,7 @@ const navLinks = [
 export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   React.useEffect(() => {
     function handleScroll() {
@@ -23,6 +26,19 @@ export function Header() {
     }
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  React.useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session?.user);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setIsAuthenticated(!!session?.user);
+      }
+    );
+    return () => subscription.unsubscribe();
   }, []);
 
   React.useEffect(() => {
@@ -80,6 +96,7 @@ export function Header() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
+          {isAuthenticated && <NotificationBell />}
           <Link href="/login">
             <Button
               variant="ghost"

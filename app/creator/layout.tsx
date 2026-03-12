@@ -6,6 +6,9 @@ import {
   LayoutDashboard,
   Megaphone,
   Handshake,
+  MessageSquare,
+  FileText,
+  Star,
   UserCog,
 } from 'lucide-react';
 import { AuthProvider, useAuthContext } from '@/components/features/auth/auth-provider';
@@ -18,6 +21,9 @@ const CREATOR_MENU: SidebarMenuItem[] = [
   { href: '/creator/dashboard', label: '대시보드', icon: LayoutDashboard },
   { href: '/creator/campaigns', label: '캠페인 피드', icon: Megaphone },
   { href: '/creator/deals', label: '내 딜', icon: Handshake },
+  { href: '/creator/messages', label: '메시지', icon: MessageSquare },
+  { href: '/creator/contracts', label: '계약 관리', icon: FileText },
+  { href: '/creator/reviews', label: '받은 리뷰', icon: Star },
   { href: '/creator/profile/edit', label: '프로필 설정', icon: UserCog },
 ];
 

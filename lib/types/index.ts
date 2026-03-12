@@ -25,6 +25,14 @@ export type ContractStatus = 'draft' | 'pending_sign' | 'active' | 'content_subm
 
 export type EscrowStatus = 'pending' | 'deposited' | 'released' | 'refunded' | 'disputed';
 
+export type NotificationType = 'match' | 'message' | 'contract' | 'review' | 'system';
+
+export type MessageType = 'text' | 'image' | 'file' | 'system';
+
+export type ReviewScoreField = 'communication_score' | 'quality_score' | 'timeliness_score';
+
+export type FileUploadContext = 'message' | 'contract' | 'portfolio' | 'profile';
+
 export interface Profile {
   id: string;
   role: UserRole;
@@ -120,4 +128,98 @@ export interface Match {
   updated_at: string;
   campaign?: Campaign;
   creator?: Creator;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  data: Record<string, unknown> | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface ChatRoom {
+  id: string;
+  match_id: string;
+  creator_id: string;
+  brand_id: string;
+  last_message_at: string | null;
+  created_at: string;
+  match?: Match;
+}
+
+export interface Message {
+  id: string;
+  room_id: string;
+  sender_id: string;
+  content: string;
+  message_type: MessageType;
+  file_url: string | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface Contract {
+  id: string;
+  match_id: string;
+  creator_id: string;
+  brand_id: string;
+  amount: number;
+  platform_fee: number;
+  content_requirements: string;
+  delivery_deadline: string;
+  revision_count: number;
+  max_revisions: number;
+  status: ContractStatus;
+  signed_by_creator: boolean;
+  signed_by_brand: boolean;
+  signed_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+  match?: Match;
+  escrow?: Escrow;
+}
+
+export interface Escrow {
+  id: string;
+  contract_id: string;
+  amount: number;
+  platform_fee: number;
+  status: EscrowStatus;
+  paid_at: string | null;
+  released_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Review {
+  id: string;
+  contract_id: string;
+  reviewer_id: string;
+  reviewee_id: string;
+  rating: number;
+  communication_score: number | null;
+  quality_score: number | null;
+  timeliness_score: number | null;
+  comment: string | null;
+  is_public: boolean;
+  created_at: string;
+  reviewer?: Profile;
+  reviewee?: Profile;
+}
+
+export interface FileUpload {
+  id: string;
+  user_id: string;
+  file_name: string;
+  file_url: string;
+  file_type: string;
+  file_size: number;
+  context: FileUploadContext;
+  context_id: string | null;
+  created_at: string;
 }

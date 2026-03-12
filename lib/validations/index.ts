@@ -72,5 +72,49 @@ export type CreatorOnboardingInput = z.infer<typeof creatorOnboardingSchema>;
 export type CreatorProfileInput = z.infer<typeof creatorProfileSchema>;
 export type BrandOnboardingInput = z.infer<typeof brandOnboardingSchema>;
 export type CampaignInput = z.infer<typeof campaignSchema>;
+export const contractCreateSchema = z.object({
+  matchId: z.string().uuid('유효한 매칭 ID를 입력하세요'),
+  amount: z.number().min(10000, '금액은 1만원 이상이어야 합니다'),
+  contentRequirements: z.string().min(1, '콘텐츠 요구사항을 입력하세요'),
+  deliveryDeadline: z.string().min(1, '납품 기한을 입력하세요'),
+  maxRevisions: z.number().min(0).max(10, '수정 횟수는 0~10회입니다').default(3),
+});
+
+export const contractUpdateSchema = z.object({
+  status: z.enum([
+    'draft', 'pending_sign', 'active', 'content_submitted',
+    'under_review', 'revision_requested', 'approved',
+    'completed', 'disputed', 'cancelled',
+  ]),
+});
+
+export const messageCreateSchema = z.object({
+  roomId: z.string().uuid('유효한 채팅방 ID를 입력하세요'),
+  content: z.string().min(1, '메시지를 입력하세요'),
+  messageType: z.enum(['text', 'image', 'file', 'system']).default('text'),
+});
+
+export const reviewCreateSchema = z.object({
+  contractId: z.string().uuid('유효한 계약 ID를 입력하세요'),
+  rating: z.number().min(1, '평점은 1~5점입니다').max(5, '평점은 1~5점입니다'),
+  communicationScore: z.number().min(1).max(5).optional(),
+  qualityScore: z.number().min(1).max(5).optional(),
+  timelinessScore: z.number().min(1).max(5).optional(),
+  comment: z.string().optional(),
+});
+
+export const fileUploadSchema = z.object({
+  fileName: z.string().min(1, '파일명을 입력하세요'),
+  fileType: z.string().min(1, '파일 타입을 입력하세요'),
+  fileSize: z.number().min(1, '파일 크기가 유효하지 않습니다'),
+  context: z.enum(['message', 'contract', 'portfolio', 'profile']),
+  contextId: z.string().uuid().optional(),
+});
+
 export type MatchCreateInput = z.infer<typeof matchCreateSchema>;
 export type MatchUpdateInput = z.infer<typeof matchUpdateSchema>;
+export type ContractCreateInput = z.infer<typeof contractCreateSchema>;
+export type ContractUpdateInput = z.infer<typeof contractUpdateSchema>;
+export type MessageCreateInput = z.infer<typeof messageCreateSchema>;
+export type ReviewCreateInput = z.infer<typeof reviewCreateSchema>;
+export type FileUploadInput = z.infer<typeof fileUploadSchema>;
