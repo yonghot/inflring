@@ -1,4 +1,13 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import {
+  listUsers,
+  listCreators,
+  listCampaigns,
+  listMatches,
+  listContracts,
+  listReviews,
+} from '@/lib/repositories/admin-repository';
+import { Profile, Creator, Campaign, Match, Contract, Review } from '@/lib/types';
 
 interface AdminStats {
   totalUsers: number;
@@ -10,6 +19,15 @@ interface AdminStats {
     newUsersToday: number;
     newCampaignsToday: number;
     newMatchesToday: number;
+  };
+}
+
+interface PaginatedResult<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
   };
 }
 
@@ -59,4 +77,63 @@ export async function getStats(supabase: SupabaseClient): Promise<AdminStats> {
       newMatchesToday: newMatchesResult.count ?? 0,
     },
   };
+}
+
+export async function getUsers(
+  supabase: SupabaseClient,
+  role?: string,
+  page = 1,
+  limit = 20
+): Promise<PaginatedResult<Profile>> {
+  const { data, count } = await listUsers(supabase, role, { page, limit });
+  return { data, meta: { total: count, page, limit } };
+}
+
+export async function getCreators(
+  supabase: SupabaseClient,
+  platform?: string,
+  page = 1,
+  limit = 20
+): Promise<PaginatedResult<Creator>> {
+  const { data, count } = await listCreators(supabase, platform, { page, limit });
+  return { data, meta: { total: count, page, limit } };
+}
+
+export async function getCampaigns(
+  supabase: SupabaseClient,
+  status?: string,
+  page = 1,
+  limit = 20
+): Promise<PaginatedResult<Campaign>> {
+  const { data, count } = await listCampaigns(supabase, status, { page, limit });
+  return { data, meta: { total: count, page, limit } };
+}
+
+export async function getMatches(
+  supabase: SupabaseClient,
+  status?: string,
+  page = 1,
+  limit = 20
+): Promise<PaginatedResult<Match>> {
+  const { data, count } = await listMatches(supabase, status, { page, limit });
+  return { data, meta: { total: count, page, limit } };
+}
+
+export async function getContracts(
+  supabase: SupabaseClient,
+  status?: string,
+  page = 1,
+  limit = 20
+): Promise<PaginatedResult<Contract>> {
+  const { data, count } = await listContracts(supabase, status, { page, limit });
+  return { data, meta: { total: count, page, limit } };
+}
+
+export async function getReviews(
+  supabase: SupabaseClient,
+  page = 1,
+  limit = 20
+): Promise<PaginatedResult<Review>> {
+  const { data, count } = await listReviews(supabase, { page, limit });
+  return { data, meta: { total: count, page, limit } };
 }

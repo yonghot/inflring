@@ -2,7 +2,15 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { LayoutDashboard } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Users,
+  UserCheck,
+  Megaphone,
+  GitMerge,
+  FileText,
+  Star,
+} from 'lucide-react';
 import { AuthProvider, useAuthContext } from '@/components/features/auth/auth-provider';
 import {
   DashboardSidebar,
@@ -11,6 +19,12 @@ import {
 
 const ADMIN_MENU: SidebarMenuItem[] = [
   { href: '/admin/dashboard', label: '대시보드', icon: LayoutDashboard },
+  { href: '/admin/users', label: '사용자 관리', icon: Users },
+  { href: '/admin/creators', label: '크리에이터 관리', icon: UserCheck },
+  { href: '/admin/campaigns', label: '캠페인 관리', icon: Megaphone },
+  { href: '/admin/matches', label: '매칭 관리', icon: GitMerge },
+  { href: '/admin/contracts', label: '계약 관리', icon: FileText },
+  { href: '/admin/reviews', label: '리뷰 관리', icon: Star },
 ];
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
