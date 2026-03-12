@@ -50,4 +50,8 @@
 - main 브랜치 직접 작업 금지. feature 브랜치 사용.
 
 ## 9. 추가 원칙 (트러블슈팅 교훈 누적)
-- (이 섹션은 프로젝트 진행 중 발견된 교훈을 기록합니다)
+- Next.js route group `(creator)` 방식은 Next.js 버전에 따라 빌드 충돌 발생. 실제 경로 `/creator/` 방식으로 전환.
+- Supabase 클라이언트(client.ts, server.ts, admin.ts)에 `?? 'placeholder'` fallback 필수. 빌드 시 정적 생성 단계에서 환경변수 없으면 에러.
+- Vercel 배포 시 작업 디렉토리에 한국어/특수문자 포함되면 프로젝트명 자동 생성 실패. `--name` 플래그로 명시 필요.
+- 계약 상태 머신은 `VALID_STATUS_TRANSITIONS` 맵으로 관리. 허용되지 않은 전이 요청 시 명시적 에러 반환.
+- 에스크로 자동 생성은 계약 서명 완료(쌍방 서명) 시점에 트리거. 수동 생성 금지.

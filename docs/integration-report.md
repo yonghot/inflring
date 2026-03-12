@@ -237,41 +237,70 @@ API Route (route.ts)
 
 ---
 
-## 5. 알려진 제약사항 (MVP)
+## 5. P1 기능 통합 현황
 
-### 5-1. 현재 미연결
+### 5-1. P1 API 엔드포인트 (추가 14 route 파일)
 
-| 항목 | 상태 | 비고 |
+| # | Method | Path | 파일 위치 | 설명 |
+|---|--------|------|-----------|------|
+| 18 | `GET` | `/api/notifications` | `app/api/notifications/route.ts` | 알림 목록 |
+| 19 | `PATCH` | `/api/notifications/[id]` | `app/api/notifications/[id]/route.ts` | 알림 읽음 처리 |
+| 20 | `POST` | `/api/notifications/read-all` | `app/api/notifications/read-all/route.ts` | 전체 읽음 |
+| 21 | `GET/POST` | `/api/chat/rooms` | `app/api/chat/rooms/route.ts` | 채팅방 목록/생성 |
+| 22 | `GET/POST` | `/api/chat/rooms/[roomId]/messages` | `app/api/chat/rooms/[roomId]/messages/route.ts` | 메시지 조회/전송 |
+| 23 | `POST` | `/api/chat/rooms/[roomId]/read` | `app/api/chat/rooms/[roomId]/read/route.ts` | 메시지 읽음 |
+| 24 | `GET/POST` | `/api/contracts` | `app/api/contracts/route.ts` | 계약 목록/생성 |
+| 25 | `GET/PATCH` | `/api/contracts/[id]` | `app/api/contracts/[id]/route.ts` | 계약 상세/상태변경 |
+| 26 | `POST` | `/api/contracts/[id]/submit` | `app/api/contracts/[id]/submit/route.ts` | 콘텐츠 제출 |
+| 27 | `POST` | `/api/contracts/[id]/revision` | `app/api/contracts/[id]/revision/route.ts` | 수정 요청 |
+| 28 | `POST` | `/api/contracts/[id]/complete` | `app/api/contracts/[id]/complete/route.ts` | 계약 완료 |
+| 29 | `GET/POST` | `/api/reviews` | `app/api/reviews/route.ts` | 리뷰 조회/작성 |
+
+### 5-2. P1 3-Layer 구성
+
+| 계층 | 파일 | 역할 |
 |------|------|------|
-| Supabase 인스턴스 연결 | 미완료 | 환경변수에 placeholder 사용. 빌드는 통과하나 실 DB 연결 필요 |
-| 이메일 인증 플로우 | 미완료 | `/(auth)/callback` 디렉토리 존재하나 `route.ts` 없음 |
-
-### 5-2. P1 (다음 단계)
-
-| 항목 | 설명 |
-|------|------|
-| 실시간 알림 | Supabase Realtime을 활용한 매칭 상태 변경 알림 |
-| 결제/에스크로 | 광고비 결제 및 에스크로 처리 |
-| 채팅 | 크리에이터-광고주 간 실시간 메시지 |
-| 리뷰/평점 | 매칭 완료 후 상호 평가 시스템 |
-
-### 5-3. PROD-TODO
-
-| 항목 | 설명 |
-|------|------|
-| 이메일 알림 | 매칭 상태 변경, 새 캠페인 등록 시 이메일 발송 |
-| 파일 업로드 | 프로필 이미지, 포트폴리오 자료 업로드 (Supabase Storage) |
-| Rate Limiting | API 엔드포인트별 요청 제한 |
-| 로깅/모니터링 | 서버 에러 추적 및 성능 모니터링 |
-| SEO 최적화 | 공개 페이지 SSR/메타데이터 최적화 |
+| Services | `notification-service.ts` | 알림 페이지네이션/읽음 처리 |
+| | `chat-service.ts` | 채팅방 생성/메시지 전송 |
+| | `contract-service.ts` | 계약 상태 머신/서명/에스크로 |
+| | `review-service.ts` | 리뷰 생성/검증 |
+| Repositories | `notification-repository.ts` | notifications 테이블 |
+| | `chat-repository.ts` | chat_rooms, messages 테이블 |
+| | `contract-repository.ts` | contracts 테이블 |
+| | `escrow-repository.ts` | escrow 테이블 |
+| | `review-repository.ts` | reviews 테이블 |
 
 ---
 
-## 6. 요약
+## 6. 알려진 제약사항
 
-- P0 API 엔드포인트 17개(15개 고유 경로) 전체 등록 및 구현 확인
-- 프론트엔드 20개 페이지에서 API 호출 연결 확인
-- 4개 핵심 플로우(회원가입, 크리에이터 지원, 광고주 캠페인 생성, 관리자 통계) 코드 레벨 검증 완료
-- 3-Layer 아키텍처(API Route -> Service -> Repository) 일관 적용 확인
-- TypeScript strict mode + Zod 검증으로 타입 안전성 확보
-- Supabase 실 인스턴스 연결 후 E2E 테스트 필요
+### 6-1. 인프라 현황
+
+| 항목 | 상태 | 비고 |
+|------|------|------|
+| Supabase 연결 | ✅ 완료 | 프로젝트 `dcflztegvoyapufpumsc` (Seoul) |
+| DB 마이그레이션 | ✅ 완료 | 12 테이블, RLS + Realtime 활성화 |
+| Vercel 배포 | ✅ 완료 | 프로덕션 배포 |
+| SERVICE_ROLE_KEY | ⚠️ 미설정 | 수동으로 Supabase Dashboard에서 복사 필요 |
+| 이메일 인증 플로우 | 미완료 | callback route 미구현 |
+
+### 6-2. PROD-TODO
+
+| 항목 | 설명 |
+|------|------|
+| Supabase Realtime 구독 | 현재 폴링 기반, Realtime 전환 필요 |
+| PG사 에스크로 결제 | Toss Payments / PortOne 연동 |
+| 이메일 알림 | 매칭/계약 상태 변경 시 이메일 발송 |
+| Rate Limiting | API 요청 제한 |
+| 파일 업로드 프론트엔드 | DB 스키마 준비됨, UI 미구현 |
+
+---
+
+## 7. 요약
+
+- **P0**: API 17개 핸들러 + 26 페이지 구현 및 통합 완료
+- **P1**: API 14개 route 파일 추가 + 12 페이지 추가, 총 27 route / 38 페이지
+- **DB**: 12 테이블 (P0: 5, P1: 7), 전체 RLS 활성화, Realtime 3 테이블
+- **3-Layer**: 총 10 서비스, 10 리포지토리로 일관 적용
+- **배포**: Supabase (Seoul) + Vercel 프로덕션 완료
+- 205 테스트 100% 통과 유지

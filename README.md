@@ -20,11 +20,11 @@
 ## 아키텍처
 
 ```
-app/api/        (HTTP 핸들링, Zod 검증)
+app/api/        (27 route files — HTTP 핸들링, Zod 검증)
   ↓
-lib/services/   (비즈니스 로직)
+lib/services/   (10 service files — 비즈니스 로직)
   ↓
-lib/repositories/ (Supabase 접근)
+lib/repositories/ (10 repository files — Supabase 접근)
 ```
 
 ## 시작하기
@@ -83,7 +83,7 @@ npm test
 ```
 app/
   (auth)/          인증 (로그인/회원가입)
-  api/             API Routes (15 endpoints)
+  api/             API Routes (27 route files)
   creator/         크리에이터 대시보드
   brand/           광고주 대시보드
   admin/           관리자 대시보드
@@ -108,6 +108,8 @@ __tests__/         단위 테스트
 
 ## API Endpoints
 
+### P0 — 핵심 (17 handlers)
+
 | 메서드 | 경로 | 설명 |
 |--------|------|------|
 | GET | /api/health | 헬스체크 |
@@ -128,11 +130,45 @@ __tests__/         단위 테스트
 | PATCH | /api/matches/[id] | 매칭 상태 변경 |
 | GET | /api/admin/stats | 관리자 통계 |
 
+### P1 — 알림, 채팅, 계약, 리뷰
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| GET | /api/notifications | 알림 목록 |
+| PATCH | /api/notifications/[id] | 알림 읽음 처리 |
+| POST | /api/notifications/read-all | 전체 읽음 |
+| GET, POST | /api/chat/rooms | 채팅방 목록/생성 |
+| GET, POST | /api/chat/rooms/[roomId]/messages | 메시지 조회/전송 |
+| POST | /api/chat/rooms/[roomId]/read | 메시지 읽음 |
+| GET, POST | /api/contracts | 계약 목록/생성 |
+| GET, PATCH | /api/contracts/[id] | 계약 상세/상태변경 |
+| POST | /api/contracts/[id]/submit | 콘텐츠 제출 |
+| POST | /api/contracts/[id]/revision | 수정 요청 |
+| POST | /api/contracts/[id]/complete | 계약 완료 |
+| GET, POST | /api/reviews | 리뷰 조회/작성 |
+
 ## 사용자 역할
 
-- **크리에이터**: 채널 등록 → 캠페인 피드 탐색 → 지원/역제안
-- **광고주**: 캠페인 등록 → 인플루언서 검색 → 제안/매칭
+- **크리에이터**: 채널 등록 → 캠페인 피드 탐색 → 지원/역제안 → 계약/채팅/리뷰
+- **광고주**: 캠페인 등록 → 인플루언서 검색 → 제안/매칭 → 계약/채팅/리뷰
 - **관리자**: 플랫폼 통계 확인, 사용자 관리
+
+## 데이터베이스 (12 테이블)
+
+| 테이블 | 설명 |
+|--------|------|
+| profiles | 사용자 프로필 (auth.users FK) |
+| creators | 크리에이터 채널 정보 |
+| brands | 광고주 회사 정보 |
+| campaigns | 캠페인 브리프 |
+| matches | 매칭 (지원/제안/역제안) |
+| notifications | 알림 |
+| chat_rooms | 채팅방 |
+| messages | 메시지 |
+| contracts | 계약 (9단계 상태 머신) |
+| escrow | 에스크로 |
+| reviews | 리뷰/평점 |
+| file_uploads | 파일 업로드 |
 
 ## 문서
 

@@ -175,7 +175,7 @@ interface ApiResponse<T> {
 }
 ```
 
-### P0 엔드포인트
+### P0 엔드포인트 (17 handlers)
 
 | 메서드 | 경로 | 설명 | 인증 |
 |--------|------|------|------|
@@ -196,6 +196,88 @@ interface ApiResponse<T> {
 | GET | /api/matches | 내 매칭 목록 | 필요 |
 | PATCH | /api/matches/[id] | 매칭 상태 변경 | 필요 |
 | GET | /api/admin/stats | 관리자 통계 | 필요 (admin) |
+
+### P1 엔드포인트 (추가)
+
+| 메서드 | 경로 | 설명 | 인증 |
+|--------|------|------|------|
+| GET | /api/notifications | 알림 목록 (페이지네이션) | 필요 |
+| PATCH | /api/notifications/[id] | 알림 읽음 처리 | 필요 |
+| POST | /api/notifications/read-all | 전체 읽음 처리 | 필요 |
+| GET | /api/chat/rooms | 채팅방 목록 | 필요 |
+| POST | /api/chat/rooms | 채팅방 생성/조회 | 필요 |
+| GET | /api/chat/rooms/[roomId]/messages | 메시지 목록 (페이지네이션) | 필요 |
+| POST | /api/chat/rooms/[roomId]/messages | 메시지 전송 | 필요 |
+| POST | /api/chat/rooms/[roomId]/read | 메시지 읽음 처리 | 필요 |
+| GET | /api/contracts | 계약 목록 | 필요 |
+| POST | /api/contracts | 계약 생성 | 필요 |
+| GET | /api/contracts/[id] | 계약 상세 | 필요 |
+| PATCH | /api/contracts/[id] | 계약 상태 변경 (서명 등) | 필요 |
+| POST | /api/contracts/[id]/submit | 콘텐츠 제출 | 필요 |
+| POST | /api/contracts/[id]/revision | 수정 요청 | 필요 |
+| POST | /api/contracts/[id]/complete | 계약 완료 (에스크로 해제) | 필요 |
+| GET | /api/reviews | 리뷰 목록 | 필요 |
+| POST | /api/reviews | 리뷰 작성 | 필요 |
+
+## P1 데이터 모델
+
+### P1 테이블
+
+```sql
+-- 알림
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY, user_id UUID REFERENCES profiles(id),
+  type TEXT, title TEXT, body TEXT, data JSONB, is_read BOOLEAN
+);
+
+-- 채팅방
+CREATE TABLE chat_rooms (
+  id UUID PRIMARY KEY, match_id UUID REFERENCES matches(id),
+  creator_id UUID, brand_id UUID, last_message_at TIMESTAMPTZ
+);
+
+-- 메시지
+CREATE TABLE messages (
+  id UUID PRIMARY KEY, room_id UUID REFERENCES chat_rooms(id),
+  sender_id UUID, content TEXT, message_type TEXT, file_url TEXT, is_read BOOLEAN
+);
+
+-- 계약 (9단계 상태 머신)
+CREATE TABLE contracts (
+  id UUID PRIMARY KEY, match_id UUID REFERENCES matches(id),
+  creator_id UUID, brand_id UUID, amount INTEGER, platform_fee INTEGER,
+  status TEXT, -- draft→pending_creator→pending_brand→active→content_submitted→revision_requested→completed|cancelled|disputed
+  signed_by_creator BOOLEAN, signed_by_brand BOOLEAN
+);
+
+-- 에스크로
+CREATE TABLE escrow (
+  id UUID PRIMARY KEY, contract_id UUID REFERENCES contracts(id),
+  amount INTEGER, platform_fee INTEGER,
+  status TEXT -- pending→held→released|refunded|disputed
+);
+
+-- 리뷰
+CREATE TABLE reviews (
+  id UUID PRIMARY KEY, contract_id UUID REFERENCES contracts(id),
+  reviewer_id UUID, reviewee_id UUID,
+  rating INTEGER(1-5), communication_score, quality_score, timeliness_score,
+  UNIQUE(contract_id, reviewer_id)
+);
+
+-- 파일 업로드
+CREATE TABLE file_uploads (
+  id UUID PRIMARY KEY, user_id UUID, file_name TEXT, file_url TEXT,
+  context TEXT -- media_kit, contract_attachment, message_attachment, content_delivery, profile_avatar
+);
+```
+
+### P1 RLS 정책
+- notifications: 본인 읽기/수정
+- chat_rooms, messages: 당사자(creator_id/brand_id)만 접근
+- contracts, escrow: 당사자만 접근
+- reviews: 공개 리뷰 읽기, 본인 작성
+- file_uploads: 본인 전체, 미디어킷/아바타 공개 읽기
 
 ## 디렉토리 구조
 PRD.md 2-9 참조.

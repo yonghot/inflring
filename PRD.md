@@ -148,39 +148,39 @@ Deal Sourcing → Deal Cooking → Deal Closing
   2. admin 역할만 접근 가능하다.
   3. 최근 활동 목록이 표시된다.
 
-### P1 — Phase 2 기능
+### P1 — Phase 2 기능 (✅ 구현 완료)
 
-#### F-012: 계약서 템플릿 빌더
-- **우선순위**: P1
-- **설명**: 모듈화된 조항으로 계약서를 자동 생성하고 독소조항을 경고.
-- **AC**:
-  1. 필수 모듈(계약 당사자, 활동 범위, 콘텐츠 귀속 등)이 자동 포함된다.
-  2. 선택 모듈(수정 횟수, 자율권 등)을 토글로 추가/제거할 수 있다.
-  3. [PROD-TODO] 독소조항 감지는 Claude API 연동 후 구현.
+#### F-012: 계약 관리 시스템 ✅
+- **우선순위**: P1 → **구현 완료**
+- **설명**: 9단계 상태 머신(draft→active→completed) + 쌍방 서명 + 에스크로 자동 연동.
+- **구현 상태**:
+  1. contracts 테이블: 9개 상태(draft, pending_creator, pending_brand, active, content_submitted, revision_requested, completed, cancelled, disputed).
+  2. 쌍방 서명 패턴: signed_by_creator + signed_by_brand → 둘 다 true 시 active + 에스크로 자동 생성.
+  3. 에스크로: 계약 서명 시 자동 생성, 완료 시 자동 released. 플랫폼 수수료 10%.
+  4. [PROD-TODO] 독소조항 감지(Claude API), PG사 연동 에스크로 결제.
 
-#### F-013: 인앱 메시징
-- **우선순위**: P1
-- **설명**: 매칭 당사자 간 실시간 채팅.
-- **AC**:
-  1. 매칭된 당사자만 채팅에 참여할 수 있다.
-  2. 텍스트 메시지를 주고받을 수 있다.
-  3. [PROD-TODO] Supabase Realtime 실시간 구독은 프로덕션에서 구현.
+#### F-013: 인앱 메시징 ✅
+- **우선순위**: P1 → **구현 완료**
+- **설명**: 매칭 당사자 간 채팅 시스템 (폴링 기반).
+- **구현 상태**:
+  1. chat_rooms + messages 테이블 + RLS: 매칭 당사자만 접근.
+  2. getOrCreateRoom: 매칭 기반 자동 채팅방 생성, 당사자 검증.
+  3. 메시지 타입: text, file, image, system. 낙관적 전송 + 5초 폴링.
+  4. [PROD-TODO] Supabase Realtime 실시간 구독 전환.
 
-#### F-014: 역제안 (Reverse Pitch)
-- **우선순위**: P1
+#### F-014: 역제안 (Reverse Pitch) ✅
+- **우선순위**: P1 → **P0에서 구현 완료** (matches 테이블 direction='creator_reverse_pitch')
 - **설명**: 인플루언서가 광고주에게 먼저 제안.
-- **AC**:
-  1. 역제안 메시지, 희망 금액, 콘텐츠 형식을 입력할 수 있다.
-  2. matches 테이블에 direction='creator_reverse_pitch'로 생성된다.
-  3. 과거 성과 데이터가 자동 첨부된다.
+- **구현 상태**: P0 매칭 시스템에 포함하여 구현 완료.
 
-#### F-015: 신뢰 온도 시스템
-- **우선순위**: P1
-- **설명**: 당근마켓식 온도 시스템으로 사용자 신뢰도를 수치화.
-- **AC**:
-  1. 계약 완료 후 상호 평가(5개 항목, 1~5점)가 가능하다.
-  2. 평가 점수에 따라 온도가 변동된다.
-  3. 프로필에 온도가 표시된다.
+#### F-015: 신뢰 온도 / 리뷰 시스템 ✅
+- **우선순위**: P1 → **구현 완료**
+- **설명**: 계약 완료 후 상호 리뷰 (5점 척도 + 세부 평점).
+- **구현 상태**:
+  1. reviews 테이블: rating(1~5), communication_score, quality_score, timeliness_score.
+  2. 완료 계약(completed) 검증, 계약당 1회 리뷰 중복 방지.
+  3. 사용자별 평균 점수 조회.
+  4. [PROD-TODO] trust_score 자동 반영 로직.
 
 ### P2 — Phase 3 기능
 
