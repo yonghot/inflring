@@ -36,7 +36,7 @@ export function ProcessSection() {
     <section id="process" className="py-20 md:py-28 bg-slate-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <FadeIn className="text-center mb-12 md:mb-16">
+        <FadeIn className="text-center mb-14 md:mb-20">
           <p className="text-sm font-semibold uppercase tracking-wider text-primary mb-3">
             How It Works
           </p>
@@ -51,27 +51,35 @@ export function ProcessSection() {
         {/* Steps */}
         <StaggerContainer
           staggerDelay={0.2}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 lg:gap-10"
+          className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 lg:gap-10"
         >
           {steps.map((step, i) => (
             <StaggerItem key={step.number}>
               <div className="relative text-center md:text-left">
-                {/* Connector line (desktop) */}
+                {/* Gradient connector line (desktop) */}
                 {i < steps.length - 1 && (
                   <div
-                    className="hidden md:block absolute top-8 left-[calc(50%+32px)] w-[calc(100%-64px)] h-px bg-border"
+                    className="hidden md:block absolute top-10 left-[calc(50%+40px)] w-[calc(100%-80px)] h-[2px]"
                     aria-hidden="true"
-                  />
+                  >
+                    <div className="h-full w-full bg-gradient-to-r from-primary via-primary-light to-primary/30 rounded-full" />
+                  </div>
                 )}
 
                 {/* Number badge */}
-                <div className="mx-auto md:mx-0 mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white font-bold text-xl shadow-lg shadow-primary/20">
-                  {step.number}
+                <div className="mx-auto md:mx-0 mb-6 relative">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white font-bold text-2xl shadow-xl shadow-primary/25">
+                    {step.number}
+                  </div>
+                  {/* Glow ring */}
+                  <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/20 to-transparent blur-sm -z-10" aria-hidden="true" />
                 </div>
 
-                {/* Icon */}
-                <div className="mb-3 inline-flex items-center gap-2">
-                  <step.icon size={20} className="text-primary" />
+                {/* Icon + Title */}
+                <div className="mb-3 inline-flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <step.icon size={18} className="text-primary" />
+                  </div>
                   <h3 className="text-xl font-semibold text-text-primary">
                     {step.title}
                   </h3>

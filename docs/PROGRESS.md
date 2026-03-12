@@ -12,6 +12,7 @@
 | Phase 5 | 문서 + Git + 배포 준비 | ✅ 완료 | README, PROGRESS.md |
 | Phase 6 | Supabase + Vercel 배포 | ✅ 완료 | 프로덕션 배포 완료 |
 | Phase 7 | P1 기능 구현 | ✅ 완료 | 알림, 채팅, 계약, 리뷰 |
+| Phase 8 | 시드 데이터 + UI/UX 개선 | ✅ 완료 | 목데이터 시딩, 프리미엄 UI |
 
 ## 현재 빌드 상태
 
@@ -296,3 +297,57 @@ lib/repositories/ (5 repository files)
 - AI 매칭 점수 고도화 (Claude API)
 - 콘텐츠 검수 워크플로
 - 성과 리포트 자동추적
+
+---
+
+## 방법론 마이그레이션 (2026-03-13)
+
+### 현재 상태
+- **구현된 기능**: P0 (11개 기능) + P1 (4개 기능) 전체 구현 완료
+- **배포 URL**: https://inflring.vercel.app
+- **기술 스택**: Next.js 15 (App Router) + TypeScript strict + Supabase + shadcn/ui + Tailwind CSS + Framer Motion
+- **페이지**: 38개 (P0: 26 + P1: 12)
+- **API Routes**: 27개 파일
+- **DB 테이블**: 12개 (P0: 5 + P1: 7)
+- **테스트**: 205개 (100% 통과, Vitest)
+
+### 기술 결정
+- **인증**: Supabase Auth (이메일/비밀번호), Admin client로 프로필 자동 생성
+- **DB**: Supabase PostgreSQL (ap-northeast-2, Seoul) + RLS 전체 활성화
+- **API 응답 포맷**: `{ success: boolean, data?: T, error?: string, meta?: object }`
+- **아키텍처**: 3계층 (API Route → Service → Repository), 역방향 의존 금지
+- **채팅**: 폴링 기반 (5초), Realtime 테이블 준비 완료
+- **계약**: 9단계 상태 머신 + 쌍방 서명 + 에스크로 자동 생성/해제
+- **플랫폼 수수료**: 10% (Math.floor)
+
+### 알려진 이슈 / TODO
+- `SUPABASE_SERVICE_ROLE_KEY` Vercel에 수동 설정 필요
+- Supabase Realtime 실시간 구독 전환 (현재 폴링)
+- PG사 연동 에스크로 결제 미구현
+- AI 매칭/독소조항 감지 미구현 (Claude API)
+- YouTube/Instagram API 실제 연동 미구현 (목업 데이터)
+- Rate Limiting 미적용
+
+## Phase 8: 시드 데이터 + UI/UX 개선 (2026-03-13)
+
+### 시드 데이터 [PROD-TODO]
+- `scripts/seed.ts` — Supabase Auth + 전체 테이블 시드 스크립트
+- `npm run seed` — 원커맨드 실행
+- 데모 계정: admin@admin.com / admin123!, user1-3@demo.com / demo123!
+- 생성 데이터: 16 유저, 10 크리에이터, 5 브랜드, 15 캠페인, 20 매칭, 15 알림
+- 상태 분포: 캠페인 (active 8, completed 3, paused 2, draft 1, cancelled 1), 매칭 (pending 4, viewed 3, accepted 5, rejected 2, negotiating 3, contracted 3)
+- 한국어 현실적 텍스트, Unsplash 프로필 이미지, 3개월 범위 날짜 분포
+
+### UI/UX 프리미엄 개선
+- 랜딩 페이지 히어로 섹션 강화
+- 카드/버튼/뱃지 컴포넌트 호버 인터랙션 개선
+- 대시보드 페이지 시각적 개선
+- 인증 페이지 디자인 개선
+- Framer Motion 마이크로 인터랙션 추가
+
+### 다음 작업 후보
+1. Supabase Realtime 채팅 전환 (폴링 → 실시간)
+2. 파일 업로드 프론트엔드 구현 (DB 스키마 준비 완료)
+3. 에스크로 PG사 연동 (Toss Payments)
+4. AI 매칭 엔진 (Claude API)
+5. 미디어킷 PDF 자동 생성

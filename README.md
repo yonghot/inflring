@@ -58,6 +58,25 @@ cp .env.example .env.local
 
 `supabase/migrations/001_initial_schema.sql`을 Supabase SQL Editor에서 실행하세요.
 
+### 시드 데이터 (데모용) [PROD-TODO]
+
+```bash
+npm run seed
+```
+
+시드 실행 시 아래 데모 계정과 목데이터가 생성됩니다:
+
+| 계정 | 비밀번호 | 역할 | 설명 |
+|------|----------|------|------|
+| admin@admin.com | admin123! | 관리자 | 전체 권한 |
+| user1@demo.com | demo123! | 크리에이터 | 활발한 사용자 (데이터 다수) |
+| user2@demo.com | demo123! | 광고주 | 일반 사용자 |
+| user3@demo.com | demo123! | 크리에이터 | 신규 사용자 (데이터 소수) |
+
+생성되는 데이터: 16 유저, 10 크리에이터, 5 브랜드, 15 캠페인, 20 매칭, 15 알림
+
+> **주의**: `.env.local`에 `SUPABASE_SERVICE_ROLE_KEY`가 설정되어 있어야 시드가 정상 동작합니다.
+
 ### 개발 서버
 
 ```bash

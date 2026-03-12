@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, LogOut, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Avatar } from '@/components/ui/avatar';
 
 export interface SidebarMenuItem {
   href: string;
@@ -17,12 +18,18 @@ export interface SidebarMenuItem {
 interface DashboardSidebarProps {
   menuItems: SidebarMenuItem[];
   userName: string;
+  /** 사용자 역할 (예: '광고주', '크리에이터') */
+  userRole?: string;
+  /** 사용자 프로필 이미지 URL */
+  userAvatar?: string | null;
   onSignOut: () => void;
 }
 
 export function DashboardSidebar({
   menuItems,
   userName,
+  userRole,
+  userAvatar,
   onSignOut,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
@@ -47,6 +54,26 @@ export function DashboardSidebar({
         </Link>
       </div>
 
+      {/* User profile mini-card */}
+      <div className="px-4 py-4 border-b border-border">
+        <div className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm">
+          <Avatar
+            src={userAvatar}
+            alt={userName}
+            initials={userName?.charAt(0)?.toUpperCase()}
+            size="md"
+          />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-text-primary truncate">
+              {userName}
+            </p>
+            {userRole && (
+              <p className="text-xs text-text-muted truncate">{userRole}</p>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Menu items */}
       <ul className="flex-1 px-3 py-4 space-y-1" role="list">
         {menuItems.map((item) => {
@@ -58,9 +85,9 @@ export function DashboardSidebar({
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200',
+                  'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 relative',
                   active
-                    ? 'bg-white shadow-sm text-primary font-medium'
+                    ? 'bg-white shadow-sm text-primary font-medium border-l-[3px] border-l-primary pl-[9px]'
                     : 'text-text-secondary hover:bg-white/60 hover:text-text-primary'
                 )}
                 aria-current={active ? 'page' : undefined}
@@ -74,11 +101,10 @@ export function DashboardSidebar({
       </ul>
 
       {/* Footer */}
-      <div className="border-t border-border px-3 py-4 space-y-2">
-        <p className="px-3 text-xs text-text-muted truncate">{userName}</p>
+      <div className="border-t border-border px-3 py-4">
         <button
           onClick={onSignOut}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-text-secondary hover:bg-white/60 hover:text-danger transition-colors"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-text-secondary hover:bg-white/60 hover:text-danger transition-colors duration-200"
           aria-label="로그아웃"
         >
           <LogOut size={20} aria-hidden="true" />
@@ -123,7 +149,7 @@ export function DashboardSidebar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/50 md:hidden"
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
@@ -132,7 +158,7 @@ export function DashboardSidebar({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-50 border-r border-border md:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-50 border-r border-border md:hidden shadow-2xl"
               aria-label="모바일 사이드바"
             >
               <div className="absolute right-3 top-4">

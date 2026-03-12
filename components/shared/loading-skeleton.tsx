@@ -16,7 +16,13 @@ function CardSkeleton({ className, lines = 3 }: CardSkeletonProps) {
         className
       )}
     >
-      <Skeleton className="h-12 w-12 rounded-lg" />
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-12 w-12 rounded-lg" />
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-4 w-1/3" />
+          <Skeleton className="h-3 w-1/5" />
+        </div>
+      </div>
       <Skeleton className="h-5 w-2/3" />
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
@@ -47,7 +53,7 @@ function TableSkeleton({ className, rows = 5, cols = 4 }: TableSkeletonProps) {
       {/* Header */}
       <div className="flex gap-4 bg-slate-50 px-6 py-4">
         {Array.from({ length: cols }).map((_, i) => (
-          <Skeleton key={i} className="h-3 flex-1" />
+          <Skeleton key={i} className="h-3 flex-1 rounded" />
         ))}
       </div>
       {/* Rows */}
@@ -57,7 +63,13 @@ function TableSkeleton({ className, rows = 5, cols = 4 }: TableSkeletonProps) {
           className="flex gap-4 border-b border-border px-6 py-4 last:border-b-0"
         >
           {Array.from({ length: cols }).map((_, colIdx) => (
-            <Skeleton key={colIdx} className="h-4 flex-1" />
+            <Skeleton
+              key={colIdx}
+              className={cn(
+                'h-4 flex-1 rounded',
+                colIdx === 0 && 'max-w-[180px]'
+              )}
+            />
           ))}
         </div>
       ))}
@@ -83,4 +95,28 @@ function ProfileSkeleton({ className }: ProfileSkeletonProps) {
   );
 }
 
-export { CardSkeleton, TableSkeleton, ProfileSkeleton };
+/* ─── Stats Skeleton ─────────────────────────────────────────────────── */
+
+interface StatsSkeletonProps {
+  className?: string;
+  count?: number;
+}
+
+function StatsSkeleton({ className, count = 4 }: StatsSkeletonProps) {
+  return (
+    <div className={cn('grid grid-cols-2 md:grid-cols-4 gap-4', className)}>
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className="rounded-xl border border-border bg-white p-5 space-y-3"
+        >
+          <Skeleton className="h-3 w-1/2 rounded" />
+          <Skeleton className="h-8 w-2/3 rounded" />
+          <Skeleton className="h-3 w-3/4 rounded" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export { CardSkeleton, TableSkeleton, ProfileSkeleton, StatsSkeleton };

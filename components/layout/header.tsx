@@ -58,7 +58,7 @@ export function Header() {
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         'h-16 md:h-20',
         scrolled
-          ? 'bg-white/80 backdrop-blur-md shadow-sm border-b border-border'
+          ? 'bg-white/80 backdrop-blur-md shadow-md border-b border-border'
           : 'bg-transparent'
       )}
     >
@@ -66,12 +66,27 @@ export function Header() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 group"
           aria-label="인플링 홈"
         >
           <span className="text-xl font-extrabold tracking-tight">
-            <span className={cn(scrolled ? 'text-primary' : 'text-white')}>
-              인플링
+            <span
+              className={cn(
+                'transition-colors duration-300',
+                scrolled ? 'text-primary' : 'text-white'
+              )}
+            >
+              인플
+            </span>
+            <span
+              className={cn(
+                'transition-colors duration-300',
+                scrolled
+                  ? 'text-primary-light'
+                  : 'text-white/90'
+              )}
+            >
+              링
             </span>
           </span>
         </Link>
@@ -83,7 +98,8 @@ export function Header() {
               key={link.href}
               href={link.href}
               className={cn(
-                'text-sm font-medium transition-colors duration-200',
+                'text-sm font-medium transition-colors duration-200 relative',
+                'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-current after:transition-all after:duration-200 hover:after:w-full',
                 scrolled
                   ? 'text-text-secondary hover:text-text-primary'
                   : 'text-white/80 hover:text-white'
@@ -135,24 +151,32 @@ export function Header() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             className="md:hidden overflow-hidden bg-white border-b border-border shadow-lg"
           >
             <nav className="flex flex-col px-4 py-4 space-y-1" aria-label="모바일 메뉴">
-              {navLinks.map((link) => (
-                <a
+              {navLinks.map((link, i) => (
+                <motion.a
                   key={link.href}
                   href={link.href}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.2 }}
                   className="rounded-lg px-4 py-3 text-sm font-medium text-text-secondary hover:bg-surface hover:text-text-primary transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
-                </a>
+                </motion.a>
               ))}
-              <div className="pt-3 border-t border-border flex flex-col gap-2">
+              <motion.div
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: navLinks.length * 0.05, duration: 0.2 }}
+                className="pt-3 border-t border-border flex flex-col gap-2"
+              >
                 <Link href="/login" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full justify-center">
                     로그인
@@ -161,7 +185,7 @@ export function Header() {
                 <Link href="/signup" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full justify-center">회원가입</Button>
                 </Link>
-              </div>
+              </motion.div>
             </nav>
           </motion.div>
         )}

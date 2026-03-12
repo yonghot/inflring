@@ -44,6 +44,109 @@ function FadeIn({
   );
 }
 
+/* ─── SlideIn ───────────────────────────────────────────────────────── */
+
+interface SlideInProps extends HTMLMotionProps<'div'> {
+  /** 슬라이드 방향 */
+  from?: 'left' | 'right' | 'top' | 'bottom';
+  /** 슬라이드 거리 (px) */
+  distance?: number;
+  delay?: number;
+  duration?: number;
+}
+
+function SlideIn({
+  children,
+  from = 'left',
+  distance = 48,
+  delay = 0,
+  duration = 0.5,
+  className,
+  ...props
+}: SlideInProps) {
+  const initialMap = {
+    left: { x: -distance, opacity: 0 },
+    right: { x: distance, opacity: 0 },
+    top: { y: -distance, opacity: 0 },
+    bottom: { y: distance, opacity: 0 },
+  } as const;
+
+  return (
+    <motion.div
+      initial={initialMap[from]}
+      whileInView={{ x: 0, y: 0, opacity: 1 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={className}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ─── ScaleIn ───────────────────────────────────────────────────────── */
+
+interface ScaleInProps extends HTMLMotionProps<'div'> {
+  /** 시작 스케일 */
+  initialScale?: number;
+  delay?: number;
+  duration?: number;
+}
+
+function ScaleIn({
+  children,
+  initialScale = 0.85,
+  delay = 0,
+  duration = 0.4,
+  className,
+  ...props
+}: ScaleInProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: initialScale }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration, delay, ease: 'easeOut' }}
+      className={className}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ─── BlurIn ────────────────────────────────────────────────────────── */
+
+interface BlurInProps extends HTMLMotionProps<'div'> {
+  /** 시작 블러 정도 (px) */
+  blurAmount?: number;
+  delay?: number;
+  duration?: number;
+}
+
+function BlurIn({
+  children,
+  blurAmount = 10,
+  delay = 0,
+  duration = 0.5,
+  className,
+  ...props
+}: BlurInProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, filter: `blur(${blurAmount}px)` }}
+      whileInView={{ opacity: 1, filter: 'blur(0px)' }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration, delay, ease: 'easeOut' }}
+      className={className}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 /* ─── StaggerContainer ──────────────────────────────────────────────── */
 
 interface StaggerContainerProps extends HTMLMotionProps<'div'> {
@@ -135,4 +238,12 @@ function HoverLift({
   );
 }
 
-export { FadeIn, StaggerContainer, StaggerItem, HoverLift };
+export {
+  FadeIn,
+  SlideIn,
+  ScaleIn,
+  BlurIn,
+  StaggerContainer,
+  StaggerItem,
+  HoverLift,
+};
