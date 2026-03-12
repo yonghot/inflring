@@ -345,6 +345,16 @@ lib/repositories/ (5 repository files)
 - 인증 페이지 디자인 개선
 - Framer Motion 마이크로 인터랙션 추가
 
+### 배포 이력
+| 날짜 | 커밋 | 내용 |
+|------|------|------|
+| 2026-03-13 00:39 | b97aa9f | 시드 데이터 + 프리미엄 UI/UX (Phase 8) |
+| 2026-03-13 08:15 | 478b657 | 인증 페이지 UI 개선 + 비밀번호 재설정 |
+
+### 핫픽스
+- admin@admin.com 비밀번호 DB 직접 재설정 (Supabase SQL: `crypt('admin123!', gen_salt('bf'))`)
+- 데모 계정 3개 비밀번호도 동일하게 재설정
+
 ### 다음 작업 후보
 1. Supabase Realtime 채팅 전환 (폴링 → 실시간)
 2. 파일 업로드 프론트엔드 구현 (DB 스키마 준비 완료)
