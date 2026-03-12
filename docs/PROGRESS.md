@@ -170,7 +170,23 @@ lib/repositories/ (5 repository files)
 
 ### Vercel
 - 프로덕션 배포 완료
+- 프로덕션 URL: https://inflring.vercel.app
+- GitHub 연동: https://github.com/yonghot/inflring (main 브랜치 → 자동 배포)
 - 환경변수: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL` 설정
+- Node.js: 24.x
+
+### 배포 이력
+
+| 날짜 | 버전 | 내용 | 상태 |
+|------|------|------|------|
+| 2026-03-12 | v1.0.0 | P0+P1 전체 기능 프로덕션 배포 | ✅ Ready |
+
+### 배포 구성
+- **빌드**: Next.js 15 (App Router)
+- **정적 페이지**: 26개 (○ Static)
+- **동적 페이지**: 12개 (ƒ Dynamic)
+- **서버리스 함수**: 자동 생성
+- **GitHub 연동**: push to main → 자동 프로덕션 배포
 
 ## Phase 7: P1 기능 구현
 
