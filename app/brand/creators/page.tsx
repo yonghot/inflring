@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, SlidersHorizontal } from 'lucide-react';
 import { CreatorCard } from '@/components/features/creator/creator-card';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -65,7 +65,14 @@ export default function BrandCreatorsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6 py-8 min-h-screen"
+      style={{
+        backgroundImage:
+          'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.03) 1px, transparent 0)',
+        backgroundSize: '24px 24px',
+      }}
+    >
       <FadeIn>
         <h1 className="text-2xl font-bold text-text-primary">인플루언서 찾기</h1>
         <p className="text-sm text-text-secondary mt-1">
@@ -73,56 +80,62 @@ export default function BrandCreatorsPage() {
         </p>
       </FadeIn>
 
-      {/* Filters */}
+      {/* Filters - improved design */}
       <FadeIn delay={0.1}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Select
-            name="platform"
-            value={filters.platform}
-            onChange={handleSelectChange}
-            aria-label="플랫폼 필터"
-          >
-            <option value="">모든 플랫폼</option>
-            {PLATFORMS.map((p) => (
-              <option key={p.value} value={p.value}>{p.label}</option>
-            ))}
-          </Select>
+        <div className="rounded-xl border border-border bg-white p-4 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
+            <SlidersHorizontal size={16} className="text-text-muted" aria-hidden="true" />
+            <span className="text-sm font-medium text-text-secondary">필터</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Select
+              name="platform"
+              value={filters.platform}
+              onChange={handleSelectChange}
+              aria-label="플랫폼 필터"
+            >
+              <option value="">모든 플랫폼</option>
+              {PLATFORMS.map((p) => (
+                <option key={p.value} value={p.value}>{p.label}</option>
+              ))}
+            </Select>
 
-          <Select
-            name="category"
-            value={filters.category}
-            onChange={handleSelectChange}
-            aria-label="카테고리 필터"
-          >
-            <option value="">모든 카테고리</option>
-            {CONTENT_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </Select>
+            <Select
+              name="category"
+              value={filters.category}
+              onChange={handleSelectChange}
+              aria-label="카테고리 필터"
+            >
+              <option value="">모든 카테고리</option>
+              {CONTENT_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </Select>
 
-          <Input
-            name="minSubscribers"
-            type="number"
-            placeholder="최소 구독자"
-            value={filters.minSubscribers}
-            onChange={handleInputChange}
-            aria-label="최소 구독자 수"
-          />
+            <Input
+              name="minSubscribers"
+              type="number"
+              placeholder="최소 구독자"
+              value={filters.minSubscribers}
+              onChange={handleInputChange}
+              aria-label="최소 구독자 수"
+            />
 
-          <Input
-            name="maxSubscribers"
-            type="number"
-            placeholder="최대 구독자"
-            value={filters.maxSubscribers}
-            onChange={handleInputChange}
-            aria-label="최대 구독자 수"
-          />
+            <Input
+              name="maxSubscribers"
+              type="number"
+              placeholder="최대 구독자"
+              value={filters.maxSubscribers}
+              onChange={handleInputChange}
+              aria-label="최대 구독자 수"
+            />
+          </div>
         </div>
       </FadeIn>
 
       {/* Results */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <CardSkeleton key={i} lines={3} />
           ))}
@@ -136,7 +149,7 @@ export default function BrandCreatorsPage() {
           />
         </FadeIn>
       ) : (
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {creators.map((creator) => (
             <StaggerItem key={creator.id}>
               <CreatorCard
