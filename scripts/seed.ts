@@ -86,6 +86,39 @@ const NOTIF_IDS = Array.from({ length: 15 }, (_, i) => {
   return `${h}-0000-4000-8000-${h}${h.slice(0, 4)}`;
 });
 
+// Contract IDs
+const CONTRACT_IDS = [
+  'ca111111-1111-4111-8111-111111111111',
+  'ca222222-2222-4222-8222-222222222222',
+  'ca333333-3333-4333-8333-333333333333',
+  'ca444444-4444-4444-8444-444444444444',
+  'ca555555-5555-4555-8555-555555555555',
+];
+
+// Chat Room IDs
+const ROOM_IDS = [
+  'ab111111-1111-4111-8111-111111111111',
+  'ab222222-2222-4222-8222-222222222222',
+  'ab333333-3333-4333-8333-333333333333',
+  'ab444444-4444-4444-8444-444444444444',
+  'ab555555-5555-4555-8555-555555555555',
+];
+
+// Review IDs
+const REVIEW_IDS = [
+  'ae111111-1111-4111-8111-111111111111',
+  'ae222222-2222-4222-8222-222222222222',
+  'ae333333-3333-4333-8333-333333333333',
+  'ae444444-4444-4444-8444-444444444444',
+];
+
+// Escrow IDs
+const ESCROW_IDS = [
+  'ef111111-1111-4111-8111-111111111111',
+  'ef222222-2222-4222-8222-222222222222',
+  'ef333333-3333-4333-8333-333333333333',
+];
+
 // ============================================
 // Auth User Definitions
 // ============================================
@@ -1070,6 +1103,347 @@ async function createNotifications(u: UserIds) {
 }
 
 // ============================================
+// Step 8: Contracts
+// ============================================
+
+async function createContracts(u: UserIds) {
+  console.log('\n📌 Step 8: 계약 생성...');
+
+  const contracts = [
+    // contracted match MATCH_IDS[17]: CAMP_9(겨울 보습 크림) + C_11(서유나) + B_13(클린뷰티코리아) → completed
+    {
+      id: CONTRACT_IDS[0],
+      match_id: MATCH_IDS[17],
+      creator_id: u.cr11,
+      brand_id: u.br13,
+      amount: 1500000,
+      platform_fee: 150000,
+      content_requirements:
+        '겨울 보습 크림 3종 리뷰 영상 (5분 이상)\n• 2주 사용 후기\n• 피부 타입별 추천\n• 성분 분석 포함',
+      delivery_deadline: dateStr(-10),
+      revision_count: 1,
+      max_revisions: 2,
+      status: 'completed',
+      signed_by_creator: true,
+      signed_by_brand: true,
+      signed_at: daysAgo(35),
+      completed_at: daysAgo(5),
+      created_at: daysAgo(36),
+    },
+    // contracted match MATCH_IDS[18]: CAMP_10(블루투스 스피커) + C_USER3(박지우) + B_14(테크기어) → completed
+    {
+      id: CONTRACT_IDS[1],
+      match_id: MATCH_IDS[18],
+      creator_id: u.user3,
+      brand_id: u.br14,
+      amount: 800000,
+      platform_fee: 80000,
+      content_requirements:
+        '블루투스 스피커 비교 리뷰 영상\n• 음질 비교 테스트\n• 배터리 테스트\n• 가격 대비 성능 평가',
+      delivery_deadline: dateStr(-5),
+      revision_count: 0,
+      max_revisions: 2,
+      status: 'completed',
+      signed_by_creator: true,
+      signed_by_brand: true,
+      signed_at: daysAgo(28),
+      completed_at: daysAgo(3),
+      created_at: daysAgo(29),
+    },
+    // contracted match MATCH_IDS[19]: CAMP_11(소셜미디어 관리) + C_10(윤재호) + B_USER2(마케팅프로) → content_submitted
+    {
+      id: CONTRACT_IDS[2],
+      match_id: MATCH_IDS[19],
+      creator_id: u.cr10,
+      brand_id: u.user2,
+      amount: 2000000,
+      platform_fee: 200000,
+      content_requirements:
+        '소셜미디어 관리 툴 리뷰 영상 (10분 이상)\n• 실제 사용 시연\n• 장단점 솔직 리뷰\n• 비포/애프터 데이터 비교',
+      delivery_deadline: dateStr(7),
+      revision_count: 0,
+      max_revisions: 2,
+      status: 'content_submitted',
+      signed_by_creator: true,
+      signed_by_brand: true,
+      signed_at: daysAgo(14),
+      completed_at: null,
+      created_at: daysAgo(15),
+    },
+    // accepted match MATCH_IDS[8]: CAMP_9(겨울 보습) + C_USER1(김수진) + B_13(클린뷰티코리아) → active
+    {
+      id: CONTRACT_IDS[3],
+      match_id: MATCH_IDS[8],
+      creator_id: u.user1,
+      brand_id: u.br13,
+      amount: 1200000,
+      platform_fee: 120000,
+      content_requirements:
+        '겨울 보습 크림 사용 리뷰\n• 뷰티 전문 크리에이터 관점 리뷰\n• 성분 설명 필수\n• 비건 인증 마크 노출',
+      delivery_deadline: dateStr(14),
+      revision_count: 0,
+      max_revisions: 2,
+      status: 'active',
+      signed_by_creator: true,
+      signed_by_brand: true,
+      signed_at: daysAgo(7),
+      completed_at: null,
+      created_at: daysAgo(8),
+    },
+    // accepted match MATCH_IDS[11]: CAMP_8(가을 트렌치코트) + C_9(강다은) + B_16(스타일하우스) → active
+    {
+      id: CONTRACT_IDS[4],
+      match_id: MATCH_IDS[11],
+      creator_id: u.cr9,
+      brand_id: u.br16,
+      amount: 600000,
+      platform_fee: 60000,
+      content_requirements:
+        '가을 트렌치코트 블로그 스타일링\n• 사진 10장 이상\n• 3가지 이상 스타일링\n• 사이즈 정보 포함',
+      delivery_deadline: dateStr(20),
+      revision_count: 0,
+      max_revisions: 1,
+      status: 'active',
+      signed_by_creator: true,
+      signed_by_brand: true,
+      signed_at: daysAgo(5),
+      completed_at: null,
+      created_at: daysAgo(6),
+    },
+  ];
+
+  const { error } = await supabase.from('contracts').upsert(contracts, { onConflict: 'id' });
+  if (error) throw new Error(`계약 생성 실패: ${error.message}`);
+  console.log(`  ✅ ${contracts.length}개 계약 생성 완료`);
+  console.log(`     completed: 2 | content_submitted: 1 | active: 2`);
+}
+
+// ============================================
+// Step 9: Chat Rooms
+// ============================================
+
+async function createChatRooms(u: UserIds) {
+  console.log('\n📌 Step 9: 채팅방 생성...');
+
+  const chatRooms = [
+    // MATCH_IDS[17]: 서유나 + 클린뷰티코리아 (completed contract)
+    {
+      id: ROOM_IDS[0],
+      match_id: MATCH_IDS[17],
+      creator_id: u.cr11,
+      brand_id: u.br13,
+      last_message_at: daysAgo(5),
+    },
+    // MATCH_IDS[18]: 박지우 + 테크기어 (completed contract)
+    {
+      id: ROOM_IDS[1],
+      match_id: MATCH_IDS[18],
+      creator_id: u.user3,
+      brand_id: u.br14,
+      last_message_at: daysAgo(3),
+    },
+    // MATCH_IDS[19]: 윤재호 + 마케팅프로 (content_submitted contract)
+    {
+      id: ROOM_IDS[2],
+      match_id: MATCH_IDS[19],
+      creator_id: u.cr10,
+      brand_id: u.user2,
+      last_message_at: daysAgo(2),
+    },
+    // MATCH_IDS[8]: 김수진 + 클린뷰티코리아 (active contract)
+    {
+      id: ROOM_IDS[3],
+      match_id: MATCH_IDS[8],
+      creator_id: u.user1,
+      brand_id: u.br13,
+      last_message_at: daysAgo(3),
+    },
+    // MATCH_IDS[11]: 강다은 + 스타일하우스 (active contract)
+    {
+      id: ROOM_IDS[4],
+      match_id: MATCH_IDS[11],
+      creator_id: u.cr9,
+      brand_id: u.br16,
+      last_message_at: daysAgo(2),
+    },
+  ];
+
+  const { error } = await supabase.from('chat_rooms').upsert(chatRooms, { onConflict: 'id' });
+  if (error) throw new Error(`채팅방 생성 실패: ${error.message}`);
+  console.log(`  ✅ ${chatRooms.length}개 채팅방 생성 완료`);
+}
+
+// ============================================
+// Step 10: Messages
+// ============================================
+
+function msgId(n: number): string {
+  const h = n.toString(16).padStart(8, '0');
+  return `${h}-a000-4000-8000-${h}${h.slice(0, 4)}`;
+}
+
+async function createMessages(u: UserIds) {
+  console.log('\n📌 Step 10: 메시지 생성...');
+
+  const messages = [
+    // Room 0: 서유나(cr11) + B_13(br13) — completed
+    { id: msgId(1), room_id: ROOM_IDS[0], sender_id: u.cr11, content: '계약이 체결되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(35) },
+    { id: msgId(2), room_id: ROOM_IDS[0], sender_id: u.br13, content: '안녕하세요! 계약 완료됐네요. 콘텐츠 방향성 논의해요.', message_type: 'text', is_read: true, created_at: daysAgo(34) },
+    { id: msgId(3), room_id: ROOM_IDS[0], sender_id: u.cr11, content: '네, 잘 부탁드립니다. 겨울 보습 크림 리뷰로 진행하면 될까요?', message_type: 'text', is_read: true, created_at: daysAgo(33) },
+    { id: msgId(4), room_id: ROOM_IDS[0], sender_id: u.br13, content: '맞아요. 제품 발송 완료했습니다. 확인해 주세요.', message_type: 'text', is_read: true, created_at: daysAgo(20) },
+    { id: msgId(5), room_id: ROOM_IDS[0], sender_id: u.cr11, content: '콘텐츠가 제출되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(8) },
+    { id: msgId(6), room_id: ROOM_IDS[0], sender_id: u.cr11, content: '계약이 완료되었습니다. 에스크로 금액이 지급되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(5) },
+
+    // Room 1: 박지우(user3) + B_14(br14) — completed
+    { id: msgId(7), room_id: ROOM_IDS[1], sender_id: u.user3, content: '계약이 체결되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(28) },
+    { id: msgId(8), room_id: ROOM_IDS[1], sender_id: u.br14, content: '박지우 님, 블루투스 스피커 리뷰 기대하고 있습니다!', message_type: 'text', is_read: true, created_at: daysAgo(27) },
+    { id: msgId(9), room_id: ROOM_IDS[1], sender_id: u.user3, content: '받았습니다. 영상 제작 시작할게요.', message_type: 'text', is_read: true, created_at: daysAgo(26) },
+    { id: msgId(10), room_id: ROOM_IDS[1], sender_id: u.user3, content: '촬영 완료했습니다. 편집 중이에요.', message_type: 'text', is_read: true, created_at: daysAgo(10) },
+    { id: msgId(11), room_id: ROOM_IDS[1], sender_id: u.user3, content: '계약이 완료되었습니다. 에스크로 금액이 지급되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(3) },
+
+    // Room 2: 윤재호(cr10) + B_USER2(user2) — content_submitted
+    { id: msgId(12), room_id: ROOM_IDS[2], sender_id: u.cr10, content: '계약이 체결되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(14) },
+    { id: msgId(13), room_id: ROOM_IDS[2], sender_id: u.user2, content: '윤재호 님, 소셜미디어 관리 캠페인 시작해요.', message_type: 'text', is_read: true, created_at: daysAgo(13) },
+    { id: msgId(14), room_id: ROOM_IDS[2], sender_id: u.cr10, content: '네! 인스타그램 피드 최적화부터 진행하겠습니다.', message_type: 'text', is_read: true, created_at: daysAgo(12) },
+    { id: msgId(15), room_id: ROOM_IDS[2], sender_id: u.user2, content: '초안 검토해 봤는데 방향성 좋네요. 계속 진행해 주세요.', message_type: 'text', is_read: true, created_at: daysAgo(7) },
+    { id: msgId(16), room_id: ROOM_IDS[2], sender_id: u.cr10, content: '콘텐츠가 제출되었습니다. 검토 중입니다.', message_type: 'system', is_read: false, created_at: daysAgo(2) },
+
+    // Room 3: 김수진(user1) + B_13(br13) — active
+    { id: msgId(17), room_id: ROOM_IDS[3], sender_id: u.user1, content: '계약이 체결되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(7) },
+    { id: msgId(18), room_id: ROOM_IDS[3], sender_id: u.br13, content: '김수진 님 안녕하세요! 겨울 보습 크림 두 번째 크리에이터로 함께하게 되어 기쁩니다.', message_type: 'text', is_read: true, created_at: daysAgo(6) },
+    { id: msgId(19), room_id: ROOM_IDS[3], sender_id: u.user1, content: '감사합니다. 제품 받으면 바로 촬영 시작할게요.', message_type: 'text', is_read: true, created_at: daysAgo(5) },
+    { id: msgId(20), room_id: ROOM_IDS[3], sender_id: u.br13, content: '제품 발송했습니다. 3~4일 내 도착 예정이에요.', message_type: 'text', is_read: false, created_at: daysAgo(3) },
+
+    // Room 4: 강다은(cr9) + B_16(br16) — active
+    { id: msgId(21), room_id: ROOM_IDS[4], sender_id: u.cr9, content: '계약이 체결되었습니다.', message_type: 'system', is_read: true, created_at: daysAgo(5) },
+    { id: msgId(22), room_id: ROOM_IDS[4], sender_id: u.br16, content: '강다은 님, 가을 트렌치코트 캠페인 잘 부탁드립니다.', message_type: 'text', is_read: true, created_at: daysAgo(4) },
+    { id: msgId(23), room_id: ROOM_IDS[4], sender_id: u.cr9, content: '네, 잘 부탁드려요. 스타일링 컨셉 먼저 공유해 주실 수 있나요?', message_type: 'text', is_read: true, created_at: daysAgo(3) },
+    { id: msgId(24), room_id: ROOM_IDS[4], sender_id: u.br16, content: '물론이죠. 파일 첨부해서 다시 보내드릴게요.', message_type: 'text', is_read: false, created_at: daysAgo(2) },
+  ];
+
+  const { error } = await supabase.from('messages').upsert(messages, { onConflict: 'id' });
+  if (error) throw new Error(`메시지 생성 실패: ${error.message}`);
+  console.log(`  ✅ ${messages.length}개 메시지 생성 완료`);
+}
+
+// ============================================
+// Step 11: Escrow
+// ============================================
+
+async function createEscrow(_u: UserIds) {
+  console.log('\n📌 Step 11: 에스크로 생성...');
+
+  const escrows = [
+    // MATCH_IDS[17] contract — completed, released
+    {
+      id: ESCROW_IDS[0],
+      contract_id: CONTRACT_IDS[0],
+      amount: 1500000,
+      platform_fee: 150000,
+      status: 'released',
+      paid_at: daysAgo(34),
+      released_at: daysAgo(5),
+    },
+    // MATCH_IDS[18] contract — completed, released
+    {
+      id: ESCROW_IDS[1],
+      contract_id: CONTRACT_IDS[1],
+      amount: 800000,
+      platform_fee: 80000,
+      status: 'released',
+      paid_at: daysAgo(27),
+      released_at: daysAgo(3),
+    },
+    // MATCH_IDS[19] contract — content_submitted, held
+    {
+      id: ESCROW_IDS[2],
+      contract_id: CONTRACT_IDS[2],
+      amount: 2000000,
+      platform_fee: 200000,
+      status: 'held',
+      paid_at: daysAgo(13),
+      released_at: null,
+    },
+  ];
+
+  const { error } = await supabase.from('escrow').upsert(escrows, { onConflict: 'id' });
+  if (error) throw new Error(`에스크로 생성 실패: ${error.message}`);
+  console.log(`  ✅ ${escrows.length}개 에스크로 생성 완료`);
+  console.log(`     released: 2 | held: 1`);
+}
+
+// ============================================
+// Step 12: Reviews
+// ============================================
+
+async function createReviews(u: UserIds) {
+  console.log('\n📌 Step 12: 리뷰 생성...');
+
+  const reviews = [
+    // MATCH_IDS[17] 계약: B_13(광고주) → C_11(크리에이터)
+    {
+      id: REVIEW_IDS[0],
+      contract_id: CONTRACT_IDS[0],
+      reviewer_id: u.br13,
+      reviewee_id: u.cr11,
+      rating: 5,
+      communication_score: 5,
+      quality_score: 5,
+      timeliness_score: 4,
+      comment: '전문적인 콘텐츠 제작과 빠른 소통 감사합니다. 겨울 보습 크림 리뷰가 정말 꼼꼼했어요.',
+      is_public: true,
+      created_at: daysAgo(4),
+    },
+    // MATCH_IDS[17] 계약: C_11(크리에이터) → B_13(광고주)
+    {
+      id: REVIEW_IDS[1],
+      contract_id: CONTRACT_IDS[0],
+      reviewer_id: u.cr11,
+      reviewee_id: u.br13,
+      rating: 4,
+      communication_score: 4,
+      quality_score: 5,
+      timeliness_score: 4,
+      comment: '명확한 요구사항과 제때 제품 발송 감사합니다. 다음에도 함께 작업하고 싶습니다.',
+      is_public: true,
+      created_at: daysAgo(4),
+    },
+    // MATCH_IDS[18] 계약: B_14(광고주) → C_USER3(크리에이터)
+    {
+      id: REVIEW_IDS[2],
+      contract_id: CONTRACT_IDS[1],
+      reviewer_id: u.br14,
+      reviewee_id: u.user3,
+      rating: 5,
+      communication_score: 5,
+      quality_score: 5,
+      timeliness_score: 5,
+      comment: '기대 이상의 영상 품질이었습니다. 음질 비교 파트가 특히 좋았어요.',
+      is_public: true,
+      created_at: daysAgo(2),
+    },
+    // MATCH_IDS[18] 계약: C_USER3(크리에이터) → B_14(광고주)
+    {
+      id: REVIEW_IDS[3],
+      contract_id: CONTRACT_IDS[1],
+      reviewer_id: u.user3,
+      reviewee_id: u.br14,
+      rating: 5,
+      communication_score: 5,
+      quality_score: 5,
+      timeliness_score: 5,
+      comment: '소통이 원활하고 피드백이 빠른 광고주입니다. 추천합니다.',
+      is_public: true,
+      created_at: daysAgo(2),
+    },
+  ];
+
+  const { error } = await supabase.from('reviews').upsert(reviews, { onConflict: 'id' });
+  if (error) throw new Error(`리뷰 생성 실패: ${error.message}`);
+  console.log(`  ✅ ${reviews.length}개 리뷰 생성 완료`);
+}
+
+// ============================================
 // Main
 // ============================================
 
@@ -1100,6 +1474,21 @@ async function main() {
     // Step 7: Create notifications
     await createNotifications(userIds);
 
+    // Step 8: Create contracts
+    await createContracts(userIds);
+
+    // Step 9: Create chat rooms
+    await createChatRooms(userIds);
+
+    // Step 10: Create messages
+    await createMessages(userIds);
+
+    // Step 11: Create escrow
+    await createEscrow(userIds);
+
+    // Step 12: Create reviews
+    await createReviews(userIds);
+
     console.log('\n' + '='.repeat(50));
     console.log('✅ 시드 데이터 생성 완료!');
     console.log('='.repeat(50));
@@ -1111,6 +1500,11 @@ async function main() {
     console.log('   • 캠페인: 15개');
     console.log('   • 매칭: 20개');
     console.log('   • 알림: 15개');
+    console.log('   • 계약: 5개');
+    console.log('   • 채팅방: 5개');
+    console.log('   • 메시지: 24개');
+    console.log('   • 에스크로: 3개');
+    console.log('   • 리뷰: 4개');
     console.log('\n🔐 로그인 계정:');
     console.log('   • admin@admin.com / admin123! (관리자)');
     console.log('   • user1@demo.com / demo123! (크리에이터 - 김수진)');
